@@ -1,0 +1,271 @@
+ssh xsliang@rhel6x64vm6.ottawa.ibm.com
+http://jsvtaxxon.hursley.ibm.com/site_mods/jtc/javatest/modes/HEAD_modes.xml
+
+cp /vm_archive/R29/jvmxa6490/20170911_364315/jvmxa6490.zip ~/tmp/sdk
+
+git init
+git clone git@github.ibm.com:xsliang/tr.open.git
+git remote add upstream git@github.ibm.com:runtimes/tr.open.git
+git remote add origin git@github.ibm.com:xsliang/tr.open.git
+
+git config --global user.email "xliang6@gmail.com"
+git config --global user.name "Xiaoli Liang"
+
+git config --global push.default simple (more conservative)
+git config --global push.default matching (old default)
+
+add following in .bashrc:
+export GIT_EDITOR=vim
+
+vm jenkins:
+https://urv-jenkins.canlab.ibm.com:9095/view/J9/job/jvm.29.personal/
+
+git remote -v
+git remote add upstream git002@gitlab-polyglot.hursley.ibm.com:jit/tr.open.git  
+
+git checkout -b xiaoli.newbranch (create a new branch)
+git checkout xiaoli.newbranch (switch to this branch)
+
+git checkout some_filename (to recover a file)
+git checkout -- path_to_directory (to recover a directory)
+
+git branch
+
+git branch -m <newname> (renames current branch)
+git branch -m <oldname> <newname> (renames a branch while on any branch)
+
+git branch -D opt.newdoc (delete local branch)
+
+git push github --delete opt.newdoc (delete remote branch)
+git push origin --delete omr.runtime
+
+
+git checkout master
+
+git reset filename.txt  // to undo git add filename.txt
+
+git commit
+git commit --amend -s
+git remote -v
+
+git fetch upstream; git rebase -i upstream/master
+//git fetch origin; git rebase -i origin/master
+git push -u origin <branchname>
+
+git fetch eclipse_omr; git rebase -i eclipse_omr/master
+//git fetch github; git rebase -i github/master
+git push -u github <branchname>
+
+git rebase --continue (after merging conflicts)
+git rebase --abort (aborting a defunct rebase)
+
+git pull --rebase upstream/master (== fetch then rebase)
+git push (optional -f to force push -- need to do if we are telling git to
+git push -f
+ignore history i pushed earlier)
+git push -f -u origin xiaoli.deliver  <-- push current branch to origin, remember i
+pushed this branch here
+
+after changes are checked in, do the following to get a clean and up-to-date
+branch to work in:
+
+git fetch upstream; 
+git checkout upstream/master; 
+git checkout -b NewBranch 
+
+git diff HEAD ibm/optimizer/OptJitFiles.mk (to get diff)
+git diff upstream/master
+
+git log ..upstream/master <-- comparing my current to upstream/master)
+git log upstream/master.. <-- comparing my current to upstream/master)
+
+git log origin/xiaoli.opt
+
+git log -p -2
+
+git log
+
+git reflog
+
+
+# to get stuff across gsa and laptop
+git fetch
+git reset --hard origin/xiaoli.opt
+
+
+git reset --soft HEAD^     # use --soft if you want to keep your changes
+git reset --hard HEAD^     # use --hard if you don't care about keeping the changes you made
+
+
+move your branch back to before my commit, but leave the
+working directory un touched, but with the changes staged for commit. Then, you
+will be able to un-stage LocaOpts.cpp, by running
+HEAD^ here means "The commit before my most recent one" 
+
+git reset HEAD ibm/optimizer/LocalOpts.cpp
+
+git checkout ibm/optimizer/LocalOpts.cpp
+
+# will point whatever branch i'm on to upstream/master, blowing everything away
+git reset --hard upstream/master
+
+
+git clean -fx
+
+git stash // put changes away for now
+git stash list // lists all stashes
+git stash show // shows changes between stash state and original state
+git stash pop // to merge in the stashed away changes
+git stash apply // like pop, but don't remove the state from stash list
+
+*diff between first parent of given stash and topmost stash
+git diff stash@{0}^1 stash@{0} compiler/runtime/OMRRuntimeAssumptions.hpp
+
+git stash show -p stash@{0}  // look at the details of stash  
+git diff stash@{0} master  // compare stash with another branch
+
+git checkout stash@{0} -- <filename>  // check a single file out of the stash
+
+git stash drop stash@{0}  // remove stash
+
+
+
+to merge changes from another branch (since it diverged) to the current branch:
+
+git fetch upstream; 
+git merge upstream/next
+
+
+
+on github:
+
+git checkout github/master
+git checkout -b opt.doc
+git cherry-pick ff261229f46a4f27dc1deccf42e4d8d3dd9794b3
+git push -u github opt.doc
+
+git fetch github 
+git rebase -i github/master 
+git push --force github opt.doc
+
+
+
+
+so you'd add it as a remote: 
+
+git add remote eclipse_omr <url for eclipse/omr> 
+
+Then fetch from it: 
+
+git fetch eclipse_omr # at this point, all the code from eclipse/omr is in you
+repo, but no branches have been updated. 
+
+Then you can fix up your local branches 
+
+# no changes on master: 
+
+git checkout master && git reset --hard eclipse_omr/master && git push --force 
+
+# Changes on master: 
+
+git checkout master && git rebase eclipse_omr/master && git push --force 
+
+I only ever maintain my feature branches though: so I'd just do: 
+
+git checkout feature_foo && git rebase -i eclipse_omr/master && git push  
+
+
+
+nice search option:
+git log -S"setAliasedTo(" 
+
+
+git format-patch -1 <commit>   // format and create patch only <commit> itself
+
+git apply --stat my.patch   // instead of applying patch, output diffstat for the input
+git apply --check my.patch  // similar to above, checks if patch is applicable and detects errors
+git am --signoff < my.patch  // applies patch plus add a sign off line
+
+
+# searching a text pattern in changes
+git log -Smy_text_pattern
+git log -SSUPPORT_REAL_EXCEPTIONEDGES
+
+
+
+
+webhooks:
+=========
+
+testing token:  c066665a752ca4f1344f3ad9fa04267aefb564a3
+
+
+
+
+b9:
+===
+
+git init
+
+git clone https://github.com/youngar/Base9.git
+
+git submodule update --init  // to download googletest and omr sub-modules
+git submodule sync && git submodule update
+
+docker run -it jduimovich/b9
+
+
+if complain about cmake using a different generator, do:
+rm CMakeCache.txt  // cached cmake output from make instead of ninja
+
+if complain about OmrPlatform, do:
+git submodule update --init  // to download googletest and omr sub-modules
+
+if complain about error in omr cmake, do:
+rm omr/omrcfg.h  // earlier generated cfg by cmake
+
+
+mac osx:
+
+* get home brew: 
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
+* use brew to install:
+brew install ninja cmake node
+brew update; brew upgrade
+
+* install parser esprima written in javascript:
+npm install esprima
+
+for workshop image setup:
+
+Steps to create the VM image:
+=============================
+
+sudo apt-get install git
+sudo apt-get install cmake
+sudo apt-get install -y build-essential npm nodejs
+sudo apt-get install ninja-build
+sudo npm install esprima
+
+mkdir Tutorial
+cd Tutorial/
+
++ Follow steps in README.md
+
+git init
+git clone https://github.com/youngar/Base9.git
+
+cd Base9
+
+git checkout next
+git submodule update --init
+
+mkdir build && cd build
+cmake -G Ninja ..
+
+ninja -j2
+ctest -V
+
+
+
