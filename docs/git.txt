@@ -1,7 +1,3 @@
-ssh xsliang@rhel6x64vm6.ottawa.ibm.com
-http://jsvtaxxon.hursley.ibm.com/site_mods/jtc/javatest/modes/HEAD_modes.xml
-
-cp /vm_archive/R29/jvmxa6490/20170911_364315/jvmxa6490.zip ~/tmp/sdk
 
 git init
 git clone git@github.ibm.com:xsliang/tr.open.git
